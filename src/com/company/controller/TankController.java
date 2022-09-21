@@ -51,9 +51,44 @@ public class TankController implements KeyListener {
                 }
                 break;
             case KeyEvent.VK_SPACE:
-                DrawBullet drawBullet = new DrawBullet(drawTank1.getFrame(), drawTank1.getTank1());
+                DrawBullet drawBullet = new DrawBullet(drawTank1.getFrame(), drawTank1.getTank1(), drawTank1.getTank2());
+                Thread bulletThread = new Thread(drawBullet);
                 drawBullet.setWallsLocation(drawTank1.getWallsLocation());
-                drawBullet.fire();
+                bulletThread.start();
+                break;
+            case KeyEvent.VK_UP:
+                if (!drawTank1.getTank2().getDirection().equals("t")){
+                    drawTank1.turnTop2();
+                } else {
+                    drawTank1.moveTop2();
+                }
+                break;
+            case KeyEvent.VK_RIGHT:
+                if (!drawTank1.getTank2().getDirection().equals("r")){
+                    drawTank1.turnRight2();
+                } else {
+                    drawTank1.moveRight2();
+                }
+                break;
+            case KeyEvent.VK_DOWN:
+                if (!drawTank1.getTank2().getDirection().equals("b")){
+                    drawTank1.turnBottom2();
+                } else {
+                    drawTank1.moveBottom2();
+                }
+                break;
+            case KeyEvent.VK_LEFT:
+                if (!drawTank1.getTank2().getDirection().equals("l")){
+                    drawTank1.turnLeft2();
+                } else {
+                    drawTank1.moveLeft2();
+                }
+                break;
+            case KeyEvent.VK_ENTER:
+                DrawBullet drawBullet2 = new DrawBullet(drawTank1.getFrame(), drawTank1.getTank2(), drawTank1.getTank1());
+                Thread bulletThread2 = new Thread(drawBullet2);
+                drawBullet2.setWallsLocation(drawTank1.getWallsLocation());
+                bulletThread2.start();
                 break;
         }
     }

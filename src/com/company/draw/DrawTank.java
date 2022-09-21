@@ -23,34 +23,50 @@ public class DrawTank extends Canvas {
     private int width = 30;
     private Tank tank1;
     private JLabel tank1Label;
+    private Tank tank2;
+    private JLabel tank2Label;
     private List<Map<String, Integer>> wallsLocation;
 
     public DrawTank(JFrame jFrame) {
         RESOURSES = "src/resourses/maps/map.txt";
         path = Paths.get(RESOURSES);
         frame = jFrame;
-        BufferedImage tank_img = null;
-        try {
-            tank_img = ImageIO.read(new File("src/resourses/images/tank-1-texture-right.png"));
-            tank = tank_img.getScaledInstance(width, height - 10, Image.SCALE_SMOOTH);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void drawTank(){
         try {
             List<String> lines = Files.readAllLines(path);
             String [] columns;
-            tank1Label = new JLabel();
-            tank1Label.setIcon(new ImageIcon(tank));
             for (int i = 0; i < lines.size(); i++) {
                 columns = lines.get(i).split("");
                 for (int j = 0; j < columns.length; j++){
                     if (columns[j].equals("1")){
+                        BufferedImage tank_img = null;
+                        try {
+                            tank_img = ImageIO.read(new File("src/resourses/images/tank-1-texture-right.png"));
+                            tank = tank_img.getScaledInstance(width, height - 10, Image.SCALE_SMOOTH);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        tank1Label = new JLabel();
+                        tank1Label.setIcon(new ImageIcon(tank));
                         tank1Label.setBounds(j * width, i * height, width, height);
                         tank1 = new Tank(1, j * width, i * height, "r");
                         frame.add(tank1Label);
+                    }
+                    else if (columns[j].equals("2")){
+                        BufferedImage tank_img = null;
+                        try {
+                            tank_img = ImageIO.read(new File("src/resourses/images/tank-1-texture-right2.png"));
+                            tank = tank_img.getScaledInstance(width, height - 10, Image.SCALE_SMOOTH);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        tank2Label = new JLabel();
+                        tank2Label.setIcon(new ImageIcon(tank));
+                        tank2Label.setBounds(j * width, i * height, width, height);
+                        tank2 = new Tank(2, j * width, i * height, "r");
+                        frame.add(tank2Label);
                     }
 
                 }
@@ -174,6 +190,118 @@ public class DrawTank extends Canvas {
         }
     }
 
+    public void moveRight2(){
+        if (checkWall(tank2.getLocationX() + 30, tank2.getLocationY())) {
+            tank2Label.setBounds(tank2.getLocationX() + 30, tank2.getLocationY(), width, height);
+            tank2.setLocationX(tank2.getLocationX() + 30);
+        }
+    }
+
+    public void moveLeft2(){
+        if (checkWall(tank2.getLocationX() - 30, tank2.getLocationY())) {
+            tank2Label.setBounds(tank2.getLocationX() - 30, tank2.getLocationY(), width, height);
+            tank2.setLocationX(tank2.getLocationX() - 30);
+        }
+    }
+
+    public void moveTop2() {
+        if (checkWall(tank2.getLocationX(), tank2.getLocationY() - 30)) {
+            tank2Label.setBounds(tank2.getLocationX(), tank2.getLocationY() - 30, width, height);
+            tank2.setLocationY(tank2.getLocationY() - 30);
+        }
+    }
+
+    public void moveBottom2() {
+        if (checkWall(tank2.getLocationX(), tank2.getLocationY() + 30)) {
+            tank2Label.setBounds(tank2.getLocationX(), tank2.getLocationY() + 30, width, height);
+            tank2.setLocationY(tank2.getLocationY() + 30);
+        }
+    }
+
+    public void turnTop2(){
+        BufferedImage tank_img = null;
+        try {
+            tank_img = ImageIO.read(new File("src/resourses/images/tank-1-texture-top2.png"));
+            if (tank2.getDirection().equals("r") || tank2.getDirection().equals("l")) {
+                tank = tank_img.getScaledInstance(height - 10, width, Image.SCALE_SMOOTH);
+                tank2Label.setBounds(tank2.getLocationX() + 5, tank2.getLocationY(), height, width);
+                tank2.setLocationX(tank2.getLocationX() + 5);
+            } else {
+                tank = tank_img.getScaledInstance(height - 10, width, Image.SCALE_SMOOTH);
+                tank2Label.setBounds(tank2.getLocationX(), tank2.getLocationY(), height, width);
+                tank2.setLocationX(tank2.getLocationX());
+            }
+            tank2.setLocationY(tank2.getLocationY());
+            tank2Label.setIcon(new ImageIcon(tank));
+            tank2.setDirection("t");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void turnBottom2(){
+        BufferedImage tank_img = null;
+        try {
+            tank_img = ImageIO.read(new File("src/resourses/images/tank-1-texture-bottom2.png"));
+            if (tank2.getDirection().equals("r") || tank2.getDirection().equals("l")){
+                tank = tank_img.getScaledInstance(height - 10, width, Image.SCALE_SMOOTH);
+                tank2Label.setBounds(tank2.getLocationX() + 5, tank2.getLocationY(), height, width);
+                tank2.setLocationX(tank2.getLocationX() + 5);
+            } else {
+                tank = tank_img.getScaledInstance(height - 10, width, Image.SCALE_SMOOTH);
+                tank2Label.setBounds(tank2.getLocationX(), tank2.getLocationY(), height, width);
+                tank2.setLocationX(tank2.getLocationX());
+            }
+            tank2.setLocationY(tank2.getLocationY());
+            tank2Label.setIcon(new ImageIcon(tank));
+            tank2.setDirection("b");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void turnRight2() {
+        BufferedImage tank_img = null;
+        try {
+            tank_img = ImageIO.read(new File("src/resourses/images/tank-1-texture-right2.png"));
+            if (tank2.getDirection().equals("t") || tank2.getDirection().equals("b")){
+                tank = tank_img.getScaledInstance(height, width - 10, Image.SCALE_SMOOTH);
+                tank2Label.setBounds(tank2.getLocationX() - 5, tank2.getLocationY(), height, width);
+                tank2.setLocationX(tank2.getLocationX() - 5);
+            } else {
+                tank = tank_img.getScaledInstance(height, width - 10, Image.SCALE_SMOOTH);
+                tank2Label.setBounds(tank2.getLocationX(), tank2.getLocationY(), height, width);
+                tank2.setLocationX(tank2.getLocationX());
+            }
+            tank2.setLocationY(tank2.getLocationY());
+            tank2Label.setIcon(new ImageIcon(tank));
+            tank2.setDirection("r");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void turnLeft2() {
+        BufferedImage tank_img = null;
+        try {
+            tank_img = ImageIO.read(new File("src/resourses/images/tank-1-texture-left2.png"));
+            if (tank2.getDirection().equals("t") || tank2.getDirection().equals("b")){
+                tank = tank_img.getScaledInstance(height, width - 10, Image.SCALE_SMOOTH);
+                tank2Label.setBounds(tank2.getLocationX() - 5, tank2.getLocationY(), height, width);
+                tank2.setLocationX(tank2.getLocationX() - 5);
+            } else {
+                tank = tank_img.getScaledInstance(height, width - 10, Image.SCALE_SMOOTH);
+                tank2Label.setBounds(tank2.getLocationX(), tank2.getLocationY(), height, width);
+                tank2.setLocationX(tank2.getLocationX());
+            }
+            tank2.setLocationY(tank2.getLocationY());
+            tank2Label.setIcon(new ImageIcon(tank));
+            tank2.setDirection("l");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public JFrame getFrame() {
         return frame;
     }
@@ -210,5 +338,9 @@ public class DrawTank extends Canvas {
         }
 
         return true;
+    }
+
+    public Tank getTank2() {
+        return tank2;
     }
 }

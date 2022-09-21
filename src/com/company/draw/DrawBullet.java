@@ -6,6 +6,7 @@ import com.company.model.Tank;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -14,41 +15,85 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-public class DrawBullet extends Canvas {
+public class DrawBullet extends Canvas implements Runnable {
     private Image bullet;
     private JFrame frame;
     private int height = 30;
     private int width = 30;
     private Tank tank1;
-    private JLabel tank1Label;
+    private Tank tank2;
     private Bullet bullet1;
     private List<Map<String, Integer>> wallsLocation;
     private JLabel bulletLabel;
 
-    public DrawBullet(JFrame jFrame, Tank tank1) {
+    public DrawBullet(JFrame jFrame, Tank tank1, Tank tank2) {
         bullet1 = new Bullet(tank1.getLocationX(), tank1.getLocationY(), tank1.getDirection(), 1);
         frame = jFrame;
         this.tank1 = tank1;
-        BufferedImage bullet_img = null;
-        try {
-            bullet_img = ImageIO.read(new File("src/resourses/images/bullet-texture.png"));
-            bullet = bullet_img.getScaledInstance(6, 6, Image.SCALE_SMOOTH);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.tank2 = tank2;
     }
 
     public void fire() {
-        bulletLabel  = new JLabel();
-        bulletLabel.setIcon(new ImageIcon(bullet));
-        frame.add(bulletLabel, 0);
+        BufferedImage bullet_img = null;
+
         if (bullet1.getDirection().equals("r")) {
+            try {
+                bullet_img = ImageIO.read(new File("src/resourses/images/bullet-texture-right.png"));
+                bullet = bullet_img.getScaledInstance(6, 6, Image.SCALE_SMOOTH);
+                bulletLabel = new JLabel();
+                bulletLabel.setIcon(new ImageIcon(bullet));
+                frame.add(bulletLabel, 0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             moveRight();
+        } else if (bullet1.getDirection().equals("l")) {
+            try {
+                bullet_img = ImageIO.read(new File("src/resourses/images/bullet-texture-left.png"));
+                bullet = bullet_img.getScaledInstance(6, 6, Image.SCALE_SMOOTH);
+                bulletLabel  = new JLabel();
+                bulletLabel.setIcon(new ImageIcon(bullet));
+                bulletLabel.setHorizontalAlignment(JLabel.RIGHT);
+                frame.add(bulletLabel, 0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            moveLeft();
+        } else if (bullet1.getDirection().equals("t")) {
+            try {
+                bullet_img = ImageIO.read(new File("src/resourses/images/bullet-texture-top.png"));
+                bullet = bullet_img.getScaledInstance(6, 6, Image.SCALE_SMOOTH);
+                bulletLabel  = new JLabel();
+                bulletLabel.setIcon(new ImageIcon(bullet));
+                bulletLabel.setVerticalAlignment(JLabel.BOTTOM);
+                bulletLabel.setHorizontalAlignment(JLabel.CENTER);
+                frame.add(bulletLabel, 0);
+                bullet1.setLocationX(bullet1.getLocationX() - 5);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            moveTop();
+        } else if (bullet1.getDirection().equals("b")) {
+            try {
+                bullet_img = ImageIO.read(new File("src/resourses/images/bullet-texture-bottom.png"));
+                bullet = bullet_img.getScaledInstance(6, 6, Image.SCALE_SMOOTH);
+                bulletLabel  = new JLabel();
+                bulletLabel.setIcon(new ImageIcon(bullet));
+                bulletLabel.setVerticalAlignment(JLabel.TOP);
+                bulletLabel.setHorizontalAlignment(JLabel.CENTER);
+                frame.add(bulletLabel, 0);
+                bullet1.setLocationX(bullet1.getLocationX() - 5);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            moveBottom();
         }
     }
 
     private synchronized void moveRight() {
-        if (checkWall(bullet1.getLocationX() + 30, bullet1.getLocationY())) {
+        if (connectToTheTank(bullet1.getLocationX() + 30, bullet1.getLocationY())) {
+            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+        } else if (checkWall(bullet1.getLocationX() + 30, bullet1.getLocationY())) {
             bulletLabel.setBounds(bullet1.getLocationX() + 30, bullet1.getLocationY(), height, width);
             bullet1.setLocationX(bullet1.getLocationX() + 30);
             try {
@@ -57,6 +102,59 @@ public class DrawBullet extends Canvas {
                 e.printStackTrace();
             }
             moveRight();
+        } else {
+            bulletLabel.setVisible(false);
+        }
+    }
+
+    private synchronized void moveLeft() {
+        if (connectToTheTank(bullet1.getLocationX() - 30, bullet1.getLocationY())) {
+            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+        } else if (checkWall(bullet1.getLocationX() - 30, bullet1.getLocationY())) {
+            bulletLabel.setBounds(bullet1.getLocationX() - 30, bullet1.getLocationY(), height, width);
+            bullet1.setLocationX(bullet1.getLocationX() - 30);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            moveLeft();
+        } else {
+            bulletLabel.setVisible(false);
+        }
+    }
+
+    private synchronized void moveTop() {
+        if (connectToTheTank(bullet1.getLocationX(), bullet1.getLocationY() - 30)) {
+            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+        } else if (checkWall(bullet1.getLocationX(), bullet1.getLocationY() - 30)) {
+            bulletLabel.setBounds(bullet1.getLocationX(), bullet1.getLocationY() - 30, height, width);
+            bullet1.setLocationY(bullet1.getLocationY() - 30);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            moveTop();
+        } else {
+            bulletLabel.setVisible(false);
+        }
+    }
+
+    private synchronized void moveBottom() {
+        if (connectToTheTank(bullet1.getLocationX(), bullet1.getLocationY() + 30)) {
+            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+        } else if (checkWall(bullet1.getLocationX(), bullet1.getLocationY() + 30)) {
+            bulletLabel.setBounds(bullet1.getLocationX(), bullet1.getLocationY() + 30, height, width);
+            bullet1.setLocationY(bullet1.getLocationY() + 30);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            moveBottom();
+        } else {
+            bulletLabel.setVisible(false);
         }
     }
 
@@ -84,5 +182,30 @@ public class DrawBullet extends Canvas {
             }
         }
         return true;
+    }
+
+    private boolean connectToTheTank(int x, int y) {
+        if (((x == tank2.getLocationX()) && (y == tank2.getLocationY())) || ((x + 5 == tank2.getLocationX()) && (y == tank2.getLocationY()))) {
+            if (tank2.getTankNumber() == 1) {
+                System.out.println("Второй игрок победил!");
+            } else if (tank2.getTankNumber() == 2) {
+                System.out.println("Первый игрок победил!");
+            }
+            return true;
+        } else if (((x == tank1.getLocationX()) && (y == tank1.getLocationY())) || ((x + 5 == tank1.getLocationX()) && (y == tank1.getLocationY()))) {
+            if (tank1.getTankNumber() == 1) {
+                System.out.println("Второй игрок победил!");
+            } else if (tank1.getTankNumber() == 2) {
+                System.out.println("Первый игрок победил!");
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void run() {
+        fire();
     }
 }
