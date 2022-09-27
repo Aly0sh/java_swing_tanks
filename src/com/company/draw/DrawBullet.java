@@ -10,8 +10,6 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -25,9 +23,10 @@ public class DrawBullet extends Canvas implements Runnable {
     private Bullet bullet1;
     private List<Map<String, Integer>> wallsLocation;
     private JLabel bulletLabel;
+    private DrawWinner drawWinner;
 
     public DrawBullet(JFrame jFrame, Tank tank1, Tank tank2) {
-        bullet1 = new Bullet(tank1.getLocationX(), tank1.getLocationY(), tank1.getDirection(), 1);
+        bullet1 = new Bullet(tank1.getLocationX(), tank1.getLocationY(), tank1.getDirection(), 20);
         frame = jFrame;
         this.tank1 = tank1;
         this.tank2 = tank2;
@@ -92,7 +91,6 @@ public class DrawBullet extends Canvas implements Runnable {
 
     private synchronized void moveRight() {
         if (connectToTheTank(bullet1.getLocationX() + 30, bullet1.getLocationY())) {
-            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
         } else if (checkWall(bullet1.getLocationX() + 30, bullet1.getLocationY())) {
             bulletLabel.setBounds(bullet1.getLocationX() + 30, bullet1.getLocationY(), height, width);
             bullet1.setLocationX(bullet1.getLocationX() + 30);
@@ -104,12 +102,13 @@ public class DrawBullet extends Canvas implements Runnable {
             moveRight();
         } else {
             bulletLabel.setVisible(false);
+            tank1.getBullets().remove(this);
+            tank2.getBullets().remove(this);
         }
     }
 
     private synchronized void moveLeft() {
         if (connectToTheTank(bullet1.getLocationX() - 30, bullet1.getLocationY())) {
-            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
         } else if (checkWall(bullet1.getLocationX() - 30, bullet1.getLocationY())) {
             bulletLabel.setBounds(bullet1.getLocationX() - 30, bullet1.getLocationY(), height, width);
             bullet1.setLocationX(bullet1.getLocationX() - 30);
@@ -121,12 +120,13 @@ public class DrawBullet extends Canvas implements Runnable {
             moveLeft();
         } else {
             bulletLabel.setVisible(false);
+            tank1.getBullets().remove(this);
+            tank2.getBullets().remove(this);
         }
     }
 
     private synchronized void moveTop() {
         if (connectToTheTank(bullet1.getLocationX(), bullet1.getLocationY() - 30)) {
-            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
         } else if (checkWall(bullet1.getLocationX(), bullet1.getLocationY() - 30)) {
             bulletLabel.setBounds(bullet1.getLocationX(), bullet1.getLocationY() - 30, height, width);
             bullet1.setLocationY(bullet1.getLocationY() - 30);
@@ -138,12 +138,13 @@ public class DrawBullet extends Canvas implements Runnable {
             moveTop();
         } else {
             bulletLabel.setVisible(false);
+            tank1.getBullets().remove(this);
+            tank2.getBullets().remove(this);
         }
     }
 
     private synchronized void moveBottom() {
         if (connectToTheTank(bullet1.getLocationX(), bullet1.getLocationY() + 30)) {
-            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
         } else if (checkWall(bullet1.getLocationX(), bullet1.getLocationY() + 30)) {
             bulletLabel.setBounds(bullet1.getLocationX(), bullet1.getLocationY() + 30, height, width);
             bullet1.setLocationY(bullet1.getLocationY() + 30);
@@ -155,6 +156,8 @@ public class DrawBullet extends Canvas implements Runnable {
             moveBottom();
         } else {
             bulletLabel.setVisible(false);
+            tank1.getBullets().remove(this);
+            tank2.getBullets().remove(this);
         }
     }
 
@@ -184,21 +187,37 @@ public class DrawBullet extends Canvas implements Runnable {
         return true;
     }
 
-    private boolean connectToTheTank(int x, int y) {
+    public boolean connectToTheTank(int x, int y) {
         if (((x == tank2.getLocationX()) && (y == tank2.getLocationY())) || ((x + 5 == tank2.getLocationX()) && (y == tank2.getLocationY()))) {
-            if (tank2.getTankNumber() == 1) {
-                System.out.println("Второй игрок победил!");
-            } else if (tank2.getTankNumber() == 2) {
-                System.out.println("Первый игрок победил!");
+            tank2.getDamage(bullet1.getDamage());
+            tank1.getBullets().remove(this);
+            tank2.getBullets().remove(this);
+            bulletLabel.setVisible(false);
+            if (tank2.getHP() <= 0) {
+                if (tank2.getTankNumber() == 1) {
+                    drawWinner.drawWinTwo();
+                    System.out.println("Второй игрок победил!");
+                } else if (tank2.getTankNumber() == 2) {
+                    drawWinner.drawWinOne();
+                    System.out.println("Первый игрок победил!");
+                }
+                return true;
             }
-            return true;
         } else if (((x == tank1.getLocationX()) && (y == tank1.getLocationY())) || ((x + 5 == tank1.getLocationX()) && (y == tank1.getLocationY()))) {
-            if (tank1.getTankNumber() == 1) {
-                System.out.println("Второй игрок победил!");
-            } else if (tank1.getTankNumber() == 2) {
-                System.out.println("Первый игрок победил!");
+            tank1.getDamage(bullet1.getDamage());
+            bulletLabel.setVisible(false);
+            tank1.getBullets().remove(this);
+            tank2.getBullets().remove(this);
+            if (tank1.getHP() <= 0) {
+                if (tank1.getTankNumber() == 1) {
+                    drawWinner.drawWinTwo();
+                    System.out.println("Второй игрок победил!");
+                } else if (tank1.getTankNumber() == 2) {
+                    drawWinner.drawWinOne();
+                    System.out.println("Первый игрок победил!");
+                }
+                return true;
             }
-            return true;
         }
 
         return false;
@@ -207,5 +226,13 @@ public class DrawBullet extends Canvas implements Runnable {
     @Override
     public void run() {
         fire();
+    }
+
+    public Bullet getBullet() {
+        return bullet1;
+    }
+
+    public void setDrawWinner(DrawWinner drawWinner) {
+        this.drawWinner = drawWinner;
     }
 }

@@ -17,6 +17,7 @@ import java.util.Map;
 public class DrawMap extends Canvas {
     private Image wall;
     private Image ground;
+    private Image water;
     private String RESOURSES;
     private Path path;
     private JFrame frame;
@@ -24,20 +25,25 @@ public class DrawMap extends Canvas {
     private int width = 30;
     private Container container;
     private List<Map<String, Integer>> wallsLocation;
+    private List<Map<String, Integer>> waterLocation;
     public DrawMap(JFrame jFrame) {
         RESOURSES = "src/resourses/maps/map.txt";
         path = Paths.get(RESOURSES);
         wallsLocation = new ArrayList<>();
+        waterLocation = new ArrayList<>();
         frame = jFrame;
         frame.setResizable(false);
         container = frame.getContentPane();
         BufferedImage wall_img = null;
         BufferedImage ground_img = null;
+        BufferedImage water_img = null;
         try {
             wall_img = ImageIO.read(new File("src/resourses/images/bricks-texture.png"));
             ground_img = ImageIO.read(new File("src/resourses/images/ground-texture.png"));
+            water_img = ImageIO.read(new File("src/resourses/images/water-texture.jpg"));
             wall = wall_img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
             ground = ground_img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+            water = water_img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,6 +58,7 @@ public class DrawMap extends Canvas {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             String [] columns;
             Map<String, Integer> wallLoc = new HashMap<>();
+            Map<String, Integer> waterLoc = new HashMap<>();
             for (int i = 0; i < lines.size(); i++) {
                 columns = lines.get(i).split("");
                 for (int j = 0; j < columns.length; j++){
@@ -62,6 +69,12 @@ public class DrawMap extends Canvas {
                         label.setIcon(new ImageIcon(wall));
                         wallsLocation.add(wallLoc);
                         wallLoc = new HashMap<>();
+                    } else if (columns[j].equals("w")) {
+                        waterLoc.put("x", j * width);
+                        waterLoc.put("y", i * height);
+                        label.setIcon(new ImageIcon(water));
+                        waterLocation.add(waterLoc);
+                        waterLoc = new HashMap<>();
                     } else {
                         label.setIcon(new ImageIcon(ground));
                     }
@@ -83,5 +96,9 @@ public class DrawMap extends Canvas {
 
     public List<Map<String, Integer>> getWallsLocation() {
         return wallsLocation;
+    }
+
+    public List<Map<String, Integer>> getWaterLocation() {
+        return waterLocation;
     }
 }

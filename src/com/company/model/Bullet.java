@@ -4,13 +4,13 @@ public class Bullet {
     private int locationX;
     private int locationY;
     private String direction;
-    private int tankNumber;
+    private int damage;
 
-    public Bullet(int locationX, int locationY, String direction, int tankNumber) {
+    public Bullet(int locationX, int locationY, String direction, int damage) {
         this.locationX = locationX;
         this.locationY = locationY;
         this.direction = direction;
-        this.tankNumber = tankNumber;
+        this.damage = damage;
     }
 
     public int getLocationX() {
@@ -35,5 +35,13 @@ public class Bullet {
 
     public void setDirection(String direction) {
         this.direction = direction;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
     }
 }

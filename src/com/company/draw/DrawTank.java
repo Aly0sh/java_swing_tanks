@@ -1,5 +1,6 @@
 package com.company.draw;
 
+import com.company.model.Bullet;
 import com.company.model.Tank;
 
 import javax.imageio.ImageIO;
@@ -26,6 +27,7 @@ public class DrawTank extends Canvas {
     private Tank tank2;
     private JLabel tank2Label;
     private List<Map<String, Integer>> wallsLocation;
+    private List<Map<String, Integer>> watersLocation;
 
     public DrawTank(JFrame jFrame) {
         RESOURSES = "src/resourses/maps/map.txt";
@@ -51,7 +53,7 @@ public class DrawTank extends Canvas {
                         tank1Label = new JLabel();
                         tank1Label.setIcon(new ImageIcon(tank));
                         tank1Label.setBounds(j * width, i * height, width, height);
-                        tank1 = new Tank(1, j * width, i * height, "r");
+                        tank1 = new Tank(1, j * width, i * height, "r", 100);
                         frame.add(tank1Label);
                     }
                     else if (columns[j].equals("2")){
@@ -65,7 +67,7 @@ public class DrawTank extends Canvas {
                         tank2Label = new JLabel();
                         tank2Label.setIcon(new ImageIcon(tank));
                         tank2Label.setBounds(j * width, i * height, width, height);
-                        tank2 = new Tank(2, j * width, i * height, "r");
+                        tank2 = new Tank(2, j * width, i * height, "r", 100);
                         frame.add(tank2Label);
                     }
 
@@ -80,6 +82,7 @@ public class DrawTank extends Canvas {
 
     public void moveRight(){
         if (checkWall(tank1.getLocationX() + 30, tank1.getLocationY())) {
+            checkBullet();
             tank1Label.setBounds(tank1.getLocationX() + 30, tank1.getLocationY(), width, height);
             tank1.setLocationX(tank1.getLocationX() + 30);
         }
@@ -87,6 +90,7 @@ public class DrawTank extends Canvas {
 
     public void moveLeft(){
         if (checkWall(tank1.getLocationX() - 30, tank1.getLocationY())) {
+            checkBullet();
             tank1Label.setBounds(tank1.getLocationX() - 30, tank1.getLocationY(), width, height);
             tank1.setLocationX(tank1.getLocationX() - 30);
         }
@@ -94,6 +98,7 @@ public class DrawTank extends Canvas {
 
     public void moveTop() {
         if (checkWall(tank1.getLocationX(), tank1.getLocationY() - 30)) {
+            checkBullet();
             tank1Label.setBounds(tank1.getLocationX(), tank1.getLocationY() - 30, width, height);
             tank1.setLocationY(tank1.getLocationY() - 30);
         }
@@ -101,6 +106,7 @@ public class DrawTank extends Canvas {
 
     public void moveBottom() {
         if (checkWall(tank1.getLocationX(), tank1.getLocationY() + 30)) {
+            checkBullet();
             tank1Label.setBounds(tank1.getLocationX(), tank1.getLocationY() + 30, width, height);
             tank1.setLocationY(tank1.getLocationY() + 30);
         }
@@ -192,6 +198,7 @@ public class DrawTank extends Canvas {
 
     public void moveRight2(){
         if (checkWall(tank2.getLocationX() + 30, tank2.getLocationY())) {
+            checkBullet();
             tank2Label.setBounds(tank2.getLocationX() + 30, tank2.getLocationY(), width, height);
             tank2.setLocationX(tank2.getLocationX() + 30);
         }
@@ -199,6 +206,7 @@ public class DrawTank extends Canvas {
 
     public void moveLeft2(){
         if (checkWall(tank2.getLocationX() - 30, tank2.getLocationY())) {
+            checkBullet();
             tank2Label.setBounds(tank2.getLocationX() - 30, tank2.getLocationY(), width, height);
             tank2.setLocationX(tank2.getLocationX() - 30);
         }
@@ -206,6 +214,7 @@ public class DrawTank extends Canvas {
 
     public void moveTop2() {
         if (checkWall(tank2.getLocationX(), tank2.getLocationY() - 30)) {
+            checkBullet();
             tank2Label.setBounds(tank2.getLocationX(), tank2.getLocationY() - 30, width, height);
             tank2.setLocationY(tank2.getLocationY() - 30);
         }
@@ -213,6 +222,7 @@ public class DrawTank extends Canvas {
 
     public void moveBottom2() {
         if (checkWall(tank2.getLocationX(), tank2.getLocationY() + 30)) {
+            checkBullet();
             tank2Label.setBounds(tank2.getLocationX(), tank2.getLocationY() + 30, width, height);
             tank2.setLocationY(tank2.getLocationY() + 30);
         }
@@ -314,6 +324,10 @@ public class DrawTank extends Canvas {
         this.wallsLocation = wallsLocation;
     }
 
+    public void setWatersLocation(List<Map<String, Integer>> watersLocation) {
+        this.watersLocation = watersLocation;
+    }
+
     public List<Map<String, Integer>> getWallsLocation() {
         return wallsLocation;
     }
@@ -337,10 +351,29 @@ public class DrawTank extends Canvas {
             }
         }
 
+        for (Map<String, Integer> i:watersLocation) {
+            if (((x - 5 == i.get("x")) && (y == i.get("y"))) || ((x == i.get("x")) && (y == i.get("y")))) {
+                return false;
+            }
+        }
+
         return true;
     }
 
     public Tank getTank2() {
         return tank2;
+    }
+
+    private void checkBullet() {
+        for (int i = 0; i < tank1.getBullets().size(); i++) {
+            if (tank1.getBullets().get(i).connectToTheTank(tank1.getBullets().get(i).getBullet().getLocationX(), tank1.getBullets().get(i).getBullet().getLocationY())){
+                break;
+            }
+        }
+        for (int i = 0; i < tank2.getBullets().size(); i++) {
+            if (tank2.getBullets().get(i).connectToTheTank(tank2.getBullets().get(i).getBullet().getLocationX(), tank2.getBullets().get(i).getBullet().getLocationY())){
+                break;
+            }
+        }
     }
 }
