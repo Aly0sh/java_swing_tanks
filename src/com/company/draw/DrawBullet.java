@@ -24,6 +24,7 @@ public class DrawBullet extends Canvas implements Runnable {
     private List<Map<String, Integer>> wallsLocation;
     private JLabel bulletLabel;
     private DrawWinner drawWinner;
+    private int speed = 100;
 
     public DrawBullet(JFrame jFrame, Tank tank1, Tank tank2) {
         bullet1 = new Bullet(tank1.getLocationX(), tank1.getLocationY(), tank1.getDirection(), 20);
@@ -95,7 +96,7 @@ public class DrawBullet extends Canvas implements Runnable {
             bulletLabel.setBounds(bullet1.getLocationX() + 30, bullet1.getLocationY(), height, width);
             bullet1.setLocationX(bullet1.getLocationX() + 30);
             try {
-                Thread.sleep(500);
+                Thread.sleep(speed);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -113,7 +114,7 @@ public class DrawBullet extends Canvas implements Runnable {
             bulletLabel.setBounds(bullet1.getLocationX() - 30, bullet1.getLocationY(), height, width);
             bullet1.setLocationX(bullet1.getLocationX() - 30);
             try {
-                Thread.sleep(500);
+                Thread.sleep(speed);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -131,7 +132,7 @@ public class DrawBullet extends Canvas implements Runnable {
             bulletLabel.setBounds(bullet1.getLocationX(), bullet1.getLocationY() - 30, height, width);
             bullet1.setLocationY(bullet1.getLocationY() - 30);
             try {
-                Thread.sleep(500);
+                Thread.sleep(speed);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -149,7 +150,7 @@ public class DrawBullet extends Canvas implements Runnable {
             bulletLabel.setBounds(bullet1.getLocationX(), bullet1.getLocationY() + 30, height, width);
             bullet1.setLocationY(bullet1.getLocationY() + 30);
             try {
-                Thread.sleep(500);
+                Thread.sleep(speed);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

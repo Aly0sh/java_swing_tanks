@@ -54,6 +54,7 @@ public class DrawTank extends Canvas {
                         tank1Label.setIcon(new ImageIcon(tank));
                         tank1Label.setBounds(j * width, i * height, width, height);
                         tank1 = new Tank(1, j * width, i * height, "r", 100);
+                        tank1Label.setText(tank1.getHP() + "");
                         frame.add(tank1Label);
                     }
                     else if (columns[j].equals("2")){
