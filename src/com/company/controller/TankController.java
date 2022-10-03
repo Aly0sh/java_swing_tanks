@@ -26,30 +26,30 @@ public class TankController implements KeyListener {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
                 if (!drawTank1.getTank1().getDirection().equals("t")){
-                    drawTank1.turnTop();
+                    drawTank1.turnTank("src/resourses/images/tank-1-texture-top.png", "t", drawTank1.tank1Label, drawTank1.tank1);
                 } else {
-                    drawTank1.moveTop();
+                    drawTank1.moveTank(drawTank1.tank1.getLocationX(), drawTank1.tank1.getLocationY() - 30, drawTank1.tank1Label, drawTank1.tank1);
                 }
                 break;
             case KeyEvent.VK_D:
                 if (!drawTank1.getTank1().getDirection().equals("r")){
-                    drawTank1.turnRight();
+                    drawTank1.turnTank("src/resourses/images/tank-1-texture-right.png", "r", drawTank1.tank1Label, drawTank1.tank1);
                 } else {
-                    drawTank1.moveRight();
+                    drawTank1.moveTank(drawTank1.tank1.getLocationX() + 30, drawTank1.tank1.getLocationY(), drawTank1.tank1Label, drawTank1.tank1);
                 }
                 break;
             case KeyEvent.VK_S:
                 if (!drawTank1.getTank1().getDirection().equals("b")){
-                    drawTank1.turnBottom();
+                    drawTank1.turnTank("src/resourses/images/tank-1-texture-bottom.png", "b", drawTank1.tank1Label, drawTank1.tank1);
                 } else {
-                    drawTank1.moveBottom();
+                    drawTank1.moveTank(drawTank1.tank1.getLocationX(), drawTank1.tank1.getLocationY() + 30, drawTank1.tank1Label, drawTank1.tank1);
                 }
                 break;
             case KeyEvent.VK_A:
                 if (!drawTank1.getTank1().getDirection().equals("l")){
-                    drawTank1.turnLeft();
+                    drawTank1.turnTank("src/resourses/images/tank-1-texture-left.png", "l", drawTank1.tank1Label, drawTank1.tank1);
                 } else {
-                    drawTank1.moveLeft();
+                    drawTank1.moveTank(drawTank1.tank1.getLocationX() - 30, drawTank1.tank1.getLocationY(), drawTank1.tank1Label, drawTank1.tank1);
                 }
                 break;
             case KeyEvent.VK_SPACE:
@@ -61,32 +61,33 @@ public class TankController implements KeyListener {
                     bulletThread.start();
                     drawTank1.getTank1().addBullet(drawBullet);
                 }
-                break;case KeyEvent.VK_UP:
+                break;
+            case KeyEvent.VK_UP:
                 if (!drawTank1.getTank2().getDirection().equals("t")){
-                    drawTank1.turnTop2();
+                    drawTank1.turnTank("src/resourses/images/tank-1-texture-top2.png", "t", drawTank1.tank2Label, drawTank1.tank2);
                 } else {
-                    drawTank1.moveTop2();
+                    drawTank1.moveTank(drawTank1.tank2.getLocationX(), drawTank1.tank2.getLocationY() - 30, drawTank1.tank2Label, drawTank1.tank2);
                 }
                 break;
             case KeyEvent.VK_RIGHT:
                 if (!drawTank1.getTank2().getDirection().equals("r")){
-                    drawTank1.turnRight2();
+                    drawTank1.turnTank("src/resourses/images/tank-1-texture-right2.png", "r", drawTank1.tank2Label, drawTank1.tank2);
                 } else {
-                    drawTank1.moveRight2();
+                    drawTank1.moveTank(drawTank1.tank2.getLocationX() + 30, drawTank1.tank2.getLocationY(), drawTank1.tank2Label, drawTank1.tank2);
                 }
                 break;
             case KeyEvent.VK_DOWN:
                 if (!drawTank1.getTank2().getDirection().equals("b")){
-                    drawTank1.turnBottom2();
+                    drawTank1.turnTank("src/resourses/images/tank-1-texture-bottom2.png", "b", drawTank1.tank2Label, drawTank1.tank2);
                 } else {
-                    drawTank1.moveBottom2();
+                    drawTank1.moveTank(drawTank1.tank2.getLocationX(), drawTank1.tank2.getLocationY() + 30, drawTank1.tank2Label, drawTank1.tank2);
                 }
                 break;
             case KeyEvent.VK_LEFT:
                 if (!drawTank1.getTank2().getDirection().equals("l")){
-                    drawTank1.turnLeft2();
+                    drawTank1.turnTank("src/resourses/images/tank-1-texture-left2.png", "l", drawTank1.tank2Label, drawTank1.tank2);
                 } else {
-                    drawTank1.moveLeft2();
+                    drawTank1.moveTank(drawTank1.tank2.getLocationX() - 30, drawTank1.tank2.getLocationY(), drawTank1.tank2Label, drawTank1.tank2);
                 }
                 break;
             case KeyEvent.VK_ENTER:
